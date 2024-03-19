@@ -68,11 +68,11 @@ app.post('/values', async (req, res) => {
   redisPublisher.publish('insert', index)
 
   //add new index that just submitted into database
-  pgClient.query('INSERT INTO values(number) VALUES($1', [index])
+  pgClient.query('INSERT INTO values(number) VALUES($1)', [index])
 
   res.send({ working: true })
 })
 
-app.listen(5000, (err) => {
+app.listen(5001, (err) => {
   console.log('Listinging')
 })
