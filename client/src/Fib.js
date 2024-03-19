@@ -32,7 +32,7 @@ const Fib = () => {
   return (
     <div>
       <form>
-        <label> Enter your index: </label>
+        <label> Enter your index to find Fibinacy numbers: </label>
         <input />
         <button> Submit </button>
       </form>
