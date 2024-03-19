@@ -1,0 +1,17 @@
+{
+  "name": "worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon"
+  },
+  "author": "Noi Sinnang",
+  "dependencies": {
+    "keys": "^0.1.2",
+    "nodemon": "1.18.3",
+    "redis": "2.8.0"
+  },
+  "license": "ISC"
+}
