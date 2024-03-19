@@ -1,59 +1,77 @@
-import { useEffect, useState } from 'react'
+import React, { Component } from 'react'
 import axios from 'axios'
 
-const Fib = () => {
-  const [seenIndexes, setSeenIndexes] = useState([])
-  const [values, setValues] = useState({})
-  const [index, setIndex] = useState('')
-
-  const getSeenIndexes = async () => {
-    const { data } = await axios.get('/api/values/current')
-    setSeenIndexes(data)
+class Fib extends Component {
+  state = {
+    seenIndexes: [],
+    values: {},
+    index: '',
   }
 
-  const getValues = async () => {
-    const { data } = await axios.get('/api/values/all')
-    setValues(data)
+  componentDidMount() {
+    this.fetchValues()
+    this.fetchIndexes()
   }
 
-  useEffect(() => {
-    getSeenIndexes()
-  }, [])
-
-  useEffect(() => {
-    getValues()
-  }, [])
-
-  const renderSeenIndexes = () => {
-    seenIndexes.map((seenIndex) => seenIndex.index).join(', ')
+  async fetchValues() {
+    const values = await axios.get('/api/values/current')
+    this.setState({ values: values.data })
   }
 
-  const renderValues = () => {
-    values.map((value) => value).join(', ')
+  async fetchIndexes() {
+    const seenIndexes = await axios.get('/api/values/all')
+    this.setState({
+      seenIndexes: seenIndexes.data,
+    })
   }
 
-  const handleSubmit = async (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault()
 
     await axios.post('/api/values', {
-      index,
+      index: this.state.index,
     })
-    setIndex(index)
+    this.setState({ index: '' })
   }
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label> Enter your index to find Fibinacy numbers: </label>
-        <input value={index} onChange={(event) => event.target.value} />
-        <button> Submit </button>
-      </form>
 
-      <h3>Indexes I have seen:</h3>
-      {renderSeenIndexes}
-      <h3>Calculated values:</h3>
-      {renderValues}
-    </div>
-  )
+  renderSeenIndexes() {
+    return this.state.seenIndexes.map(({ number }) => number).join(', ')
+  }
+
+  renderValues() {
+    const entries = []
+
+    for (let key in this.state.values) {
+      entries.push(
+        <div key={key}>
+          For index {key} I calculated {this.state.values[key]}
+        </div>
+      )
+    }
+
+    return entries
+  }
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <label>Enter your index:</label>
+          <input
+            value={this.state.index}
+            onChange={(event) => this.setState({ index: event.target.value })}
+          />
+          <button>Submit</button>
+        </form>
+
+        <h3>Indexes I have seen:</h3>
+        {this.renderSeenIndexes()}
+
+        <h3>Calculated Values:</h3>
+        {this.renderValues()}
+      </div>
+    )
+  }
 }
 
 export default Fib
