@@ -16,11 +16,6 @@ const Fib = () => {
     setValues(data)
   }
 
-  // const getIndex = async () => {
-  //   const {data} = await axios.get('/app/values/')
-  //   setIndex(data)
-  // }
-
   useEffect(() => {
     getSeenIndexes()
   }, [])
@@ -29,13 +24,34 @@ const Fib = () => {
     getValues()
   }, [])
 
+  const renderSeenIndexes = () => {
+    seenIndexes.map((seenIndex) => seenIndex.index).join(', ')
+  }
+
+  const renderValues = () => {
+    values.map((value) => value).join(', ')
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+
+    await axios.post('/api/values', {
+      index,
+    })
+    setIndex(index)
+  }
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <label> Enter your index to find Fibinacy numbers: </label>
-        <input />
+        <input value={index} onChange={(event) => event.target.value} />
         <button> Submit </button>
       </form>
+
+      <h3>Indexes I have seen:</h3>
+      {renderSeenIndexes}
+      <h3>Calculated values:</h3>
+      {renderValues}
     </div>
   )
 }
